@@ -29,6 +29,21 @@ router.get('/movies/:id', async function(req, res, next) {
   }
 });
 
+router.get('/movies/category/:id', async function(req, res, next) {
+  try {
+    const movies = await peliculas.findAll({
+      where: {
+        categoria_id: req.params.id
+      }
+    });
+    return res.status(200).json({
+       movies
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 router.post('/movies' , async function(req,res,next){
   try {
     let data = req.body;
@@ -38,5 +53,31 @@ router.post('/movies' , async function(req,res,next){
     res.status(500).json(error);
   }
 });
+
+router.put('/movies/:id', async function(req,res,next){
+   try {
+    await peliculas.update(req.body, {
+      where: {
+        id_pelicula: req.params.id
+      }
+    });
+    res.status(200).json({"update" : 1});
+   } catch (error) {
+     res.status(500).json(error);
+   }
+});
+
+router.delete('/movies/:id' , async function(req,res,next){
+    try {
+      await peliculas.destroy({
+        where: {
+          id_pelicula: req.params.id
+        }
+      });
+      res.status(200).json({"delete" : 1})
+    } catch (error) {
+      res.status(500).json(error);      
+    }
+})
 
 module.exports = router;
